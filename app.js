@@ -333,14 +333,15 @@
   }
 
   /* --- dodaj termin --- */
+  function timeOpts(sel){var o="";for(var m=6*60;m<=23*60+45;m+=15){var t=fromMin(m);o+='<option value="'+t+'"'+(t===sel?' selected':'')+'>'+t+'</option>'}return o}
   function renderAdd(v,s){
     if(!(s.services||[]).length){v.innerHTML='<h2>Dodaj termin last minute</h2><p class="empty">Najpierw dodaj przynajmniej jedną usługę w zakładce „Profil”, w sekcji Cennik.</p>';return}
-    if(!addState.time)addState.time=fromMin(Math.min(Math.ceil((nowMin()+60)/30)*30,23*60));
+    if(!addState.time)addState.time=fromMin(Math.min(Math.ceil((nowMin()+60)/15)*15,23*60+45));
     if(!addState.svc||!s.services.some(function(x){return String(x.id)===String(addState.svc)}))addState.svc=String(s.services[0].id);
     v.innerHTML='<h2>Dodaj termin last minute</h2><p class="sub">Termin trafia od razu na listę klientów. Po rezerwacji albo po upływie godziny sam z niej znika.</p>'+
       '<form id="addForm" class="card pad" novalidate><div class="field"><span style="display:block;font-weight:500;font-size:14px;margin-bottom:4px">Dzień</span><div class="seg" id="daySeg" role="group" aria-label="Dzień">'+
       DAYS.map(function(d,i){return '<button type="button" data-sday="'+i+'" aria-pressed="'+(addState.day===i)+'">'+d+'</button>'}).join("")+'</div></div>'+
-      '<div class="row3"><div class="field"><label class="f" for="at">Godzina</label><input id="at" type="time" step="900" value="'+esc(addState.time)+'"></div>'+
+      '<div class="row3"><div class="field"><label class="f" for="at">Godzina</label><select id="at">'+timeOpts(addState.time)+'</select></div>'+
       '<div class="field"><label class="f" for="as">Usługa</label><select id="as">'+s.services.map(function(x){return '<option value="'+esc(x.id)+'"'+(String(x.id)===String(addState.svc)?' selected':'')+'>'+esc(x.name)+' ('+x.dur+' min, '+zl(x.price)+')</option>'}).join("")+'</select></div>'+
       '<div class="field"><label class="f" for="ap">Cena promocyjna (zł)</label><input id="ap" inputmode="decimal" placeholder="opcjonalnie" value="'+esc(addState.promo)+'"></div></div>'+
       '<p class="err" id="aerr" hidden></p><p class="hint" id="aprev" style="margin:0 0 12px"></p><div class="btn-row"><button class="btn" type="submit">Opublikuj termin</button></div></form>';
