@@ -189,9 +189,9 @@
     var s=r.s,h=(s.hours||[])[todayIdx()],hrs=h&&!h.closed?"dziś "+h.from+"–"+h.to:"dziś zamknięte",html="",last="";
     r.v.forEach(function(x){
       var o=slotOff(x);
-      if(x.date!==last){html+='<div class="daylab">'+DAYS[o]+', '+esc(dayDate(o))+'</div>';last=x.date}
+      if(x.date!==last){html+='<div class="daylab d'+o+'"><b>'+DAYS[o]+'</b> '+esc(dayDate(o))+'</div>';last=x.date}
       var off=x.promo!=null?Math.round((1-x.promo/x.price)*100):0;
-      html+='<div class="slot"><div class="t">'+esc(x.time)+'</div><div class="sv"><div>'+esc(x.service)+' <span class="meta">· '+x.dur+' min</span></div>'+
+      html+='<div class="slot d'+o+'"><div class="tcol"><div class="t">'+esc(x.time)+'</div><span class="dchip d'+o+'">'+DAYS[o]+'</span></div><div class="sv"><div>'+esc(x.service)+' <span class="meta">· '+x.dur+' min</span></div>'+
         '<div class="price">'+priceHtml(x)+(off>0?'<span class="off">−'+off+'%</span>':'')+'</div></div>'+
         '<div class="go"><button class="btn sm" data-pick="'+esc(x.id)+'" type="button"'+(canWrite===false?' disabled':'')+'>Zarezerwuj</button></div>'+
         (selected===x.id?bookForm(x):'')+'</div>';
@@ -380,7 +380,7 @@
     html+='<p class="hint" style="margin:-8px 0 0">Widoczne dla klientów teraz: <b>'+free+'</b></p>';
     [0,1,2].forEach(function(d){
       var rows=list.filter(function(x){return slotOff(x)===d});if(!rows.length)return;
-      html+='<div class="daylab free">'+DAYS[d]+', '+esc(dayDate(d))+'</div><div class="card pad" style="padding-top:4px;padding-bottom:4px">'+rows.map(function(x){
+      html+='<div class="daylab free d'+d+'"><b>'+DAYS[d]+'</b> '+esc(dayDate(d))+'</div><div class="card pad" style="padding-top:4px;padding-bottom:4px">'+rows.map(function(x){
         var st=stateOf(x);
         return '<div class="srow'+(st==="past"?' dim':'')+'"><div class="t">'+esc(x.time)+'</div><div class="sv"><div>'+esc(x.service)+' <span class="meta">· '+x.dur+' min</span></div><div class="meta price">'+priceHtml(x)+(x.booked?' · '+esc(x.booked.name):'')+'</div></div>'+
           '<div class="act btn-row">'+pill(st)+(st==="free"?'<button class="btn danger sm" data-sdel="'+esc(x.id)+'" type="button">Usuń</button>':'')+'</div></div>';
