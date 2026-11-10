@@ -196,8 +196,8 @@
         '<div class="go"><button class="btn sm" data-pick="'+esc(x.id)+'" type="button"'+(canWrite===false?' disabled':'')+'>Zarezerwuj</button></div>'+
         (selected===x.id?bookForm(x):'')+'</div>';
     });
-    return '<article class="card"><div class="cover" aria-hidden="true">'+esc(s.name.split(" ").map(function(w){return w[0]||""}).join("").slice(0,2))+'</div>'+
-      '<div class="body"><div class="head"><h3>'+esc(s.name)+'</h3><span class="dist">'+km(r.d)+' od Ciebie</span></div>'+
+    return '<article class="card"><div class="shead"><h3>'+esc(s.name)+'</h3><span class="dist">'+km(r.d)+' od Ciebie</span></div>'+
+      '<div class="body">'+
       '<div class="meta">'+esc(s.address)+', Radomsko · '+esc(hrs)+'</div>'+(s.desc?'<p class="desc">'+esc(s.desc)+'</p>':'')+'</div>'+html+
       '<div class="foot callrow"><span>Wolisz zadzwonić? Numer salonu: <span class="phone">'+esc(s.phone)+'</span></span>'+
       '<span class="btn-row"><a class="btn sm" href="'+esc(telHref(s.phone))+'">Zadzwoń i zarezerwuj</a><button class="btn ghost sm" type="button" data-copy="'+esc(s.phone)+'">Kopiuj numer</button>'+(s.mapUrl?'<a href="'+esc(s.mapUrl)+'" target="_blank" rel="noopener">Mapa</a>':'')+'</span></div></article>';
@@ -283,8 +283,8 @@
     $("app").innerHTML='<div class="login card pad"><h2>'+(reg?"Załóż konto salonu":"Zaloguj się")+'</h2>'+
       '<p class="sub">'+(reg?"Wybierz nazwę salonu i hasło. Resztę danych uzupełnisz w profilu.":"Wpisz nazwę salonu i hasło, które ustawiłeś przy zakładaniu konta.")+'</p>'+
       '<form id="loginForm" novalidate><div class="field"><label class="f" for="ln">Nazwa salonu</label><input id="ln" autocomplete="username"></div>'+
-      '<div class="field"><label class="f" for="lp">Hasło</label><input id="lp" type="password" autocomplete="'+(reg?"new-password":"current-password")+'"></div>'+
-      (reg?'<div class="field"><label class="f" for="lp2">Powtórz hasło</label><input id="lp2" type="password" autocomplete="new-password"></div>':'')+
+      '<div class="field"><label class="f" for="lp">Hasło</label><span class="pw"><input id="lp" type="password" autocomplete="'+(reg?"new-password":"current-password")+'"><button type="button" class="pwb" data-pw="lp" aria-pressed="false">Pokaż</button></span></div>'+
+      (reg?'<div class="field"><label class="f" for="lp2">Powtórz hasło</label><span class="pw"><input id="lp2" type="password" autocomplete="new-password"><button type="button" class="pwb" data-pw="lp2" aria-pressed="false">Pokaż</button></span></div>':'')+
       '<p class="err" id="lerr" hidden></p>'+
       '<div class="btn-row"><button class="btn" type="submit" id="lsub">'+(reg?"Załóż konto":"Zaloguj")+'</button><button class="link" type="button" id="switchMode">'+(reg?"Mam już konto":"Załóż konto")+'</button></div></form>'+
       (reg?'':'<p class="hint">Konta demo: Salon Nożyce, Barber Cień, Studio Kontur, Fryzjer Pod Lipą. Hasło każdego: <b>demo123</b>.</p>')+
@@ -558,4 +558,30 @@
   });
 
   init();
+})();
+
+/* --- pokaż/ukryj hasło --- */
+document.addEventListener("click",function(e){
+  var b=e.target.closest&&e.target.closest("[data-pw]");if(!b)return;
+  var i=document.getElementById(b.getAttribute("data-pw"));if(!i)return;
+  var show=i.type==="password";i.type=show?"text":"password";
+  b.textContent=show?"Ukryj":"Pokaż";b.setAttribute("aria-pressed",show?"true":"false");
+});
+/* --- motyw jasny / ciemny --- */
+(function(){
+  var root=document.documentElement,btn=document.getElementById("themeBtn"),meta=document.getElementById("themeColor");
+  var sun='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
+  var moon='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>';
+  function paint(){
+    var dark=root.getAttribute("data-theme")==="dark";
+    if(btn)btn.innerHTML=dark?sun+" Jasny ekran":moon+" Ciemny ekran";
+    if(meta)meta.setAttribute("content",dark?"#241846":"#5B3FD1");
+  }
+  if(btn)btn.addEventListener("click",function(){
+    var dark=root.getAttribute("data-theme")==="dark";
+    if(dark)root.removeAttribute("data-theme");else root.setAttribute("data-theme","dark");
+    try{localStorage.setItem("flm_theme",dark?"light":"dark")}catch(e){}
+    paint();
+  });
+  paint();
 })();
