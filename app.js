@@ -574,7 +574,7 @@ document.addEventListener("click",function(e){
   var moon='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>';
   function paint(){
     var dark=root.getAttribute("data-theme")==="dark";
-    if(btn)btn.innerHTML=dark?sun+" Jasny ekran":moon+" Ciemny ekran";
+    if(btn)btn.innerHTML=dark?sun+" Jasny":moon+" Ciemny";
     if(meta)meta.setAttribute("content",dark?"#241846":"#5B3FD1");
   }
   if(btn)btn.addEventListener("click",function(){
